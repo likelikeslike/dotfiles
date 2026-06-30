@@ -1,0 +1,127 @@
+cursor-style-blink = false
+macos-titlebar-style = tabs
+macos-option-as-alt = true
+window-save-state = always
+
+split-inherit-working-directory = true
+tab-inherit-working-directory = false
+window-inherit-working-directory = false
+working-directory = home
+shell-integration = detect
+shell-integration-features = no-cursor,no-sudo,no-title
+
+font-family = JetBrains Mono
+font-size = 12
+
+background = #222436
+foreground = #c8d3f5
+selection-background = #2d3f76
+selection-foreground = #c8d3f5
+cursor-color = #c8d3f5
+cursor-text = #222436
+
+background-opacity = 0.75
+background-blur = 10
+window-padding-x = 10
+window-padding-y = 5
+unfocused-split-opacity = 0.6
+
+palette = 0=#1b1d2b
+palette = 1=#ff757f
+palette = 2=#c3e88d
+palette = 3=#ffc777
+palette = 4=#82aaff
+palette = 5=#7c5fbf
+palette = 6=#86e1fc
+palette = 7=#c7c7c7
+
+palette = 8=#444a73
+palette = 9=#ff8d94
+palette = 10=#c7fb6d
+palette = 11=#ffd8ab
+palette = 12=#9ab8ff
+palette = 13=#caabff
+palette = 14=#b2ebff
+palette = 15=#c8d3f5
+
+palette = 16=#ff966c
+palette = 17=#c53b53
+
+# Splits
+keybind = cmd+backslash=new_split:right
+keybind = cmd+minus=new_split:down
+keybind = cmd+plus=unbind
+keybind = cmd+equal=unbind
+keybind = cmd+shift+equal=increase_font_size:1
+keybind = cmd+shift+minus=decrease_font_size:1
+keybind = cmd+z=toggle_split_zoom
+keybind = cmd+shift+j=goto_split:left
+keybind = cmd+shift+l=goto_split:right
+keybind = cmd+shift+i=goto_split:up
+keybind = cmd+shift+k=goto_split:down
+keybind = cmd+w=close_tab
+keybind = cmd+x=close_surface
+keybind = cmd+left=resize_split:left,20
+keybind = cmd+right=resize_split:right,20
+keybind = cmd+up=resize_split:up,20
+keybind = cmd+down=resize_split:down,20
+
+# Tabs
+keybind = cmd+j=previous_tab
+keybind = cmd+l=next_tab
+keybind = cmd+right_bracket=next_tab
+keybind = cmd+left_bracket=previous_tab
+keybind = cmd+r=prompt_tab_title
+keybind = cmd+one=goto_tab:1
+keybind = cmd+two=goto_tab:2
+keybind = cmd+three=goto_tab:3
+keybind = cmd+four=goto_tab:4
+keybind = cmd+five=goto_tab:5
+keybind = cmd+six=goto_tab:6
+keybind = cmd+seven=goto_tab:7
+keybind = cmd+eight=goto_tab:8
+keybind = cmd+nine=goto_tab:9
+
+# Ctrl 0-9
+keybind = ctrl+zero=text:\x1b[48;5u
+keybind = ctrl+one=text:\x1b[49;5u
+keybind = ctrl+two=text:\x1b[50;5u
+keybind = ctrl+three=text:\x1b[51;5u
+keybind = ctrl+four=text:\x1b[52;5u
+keybind = ctrl+five=text:\x1b[53;5u
+keybind = ctrl+six=text:\x1b[54;5u
+keybind = ctrl+seven=text:\x1b[55;5u
+keybind = ctrl+eight=text:\x1b[56;5u
+keybind = ctrl+nine=text:\x1b[57;5u
+
+# Ctrl + punctuation
+keybind = ctrl+period=text:\x1b[46;5u
+keybind = ctrl+comma=text:\x1b[44;5u
+keybind = ctrl+semicolon=text:\x1b[59;5u
+
+# Shift + Enter
+keybind = shift+enter=text:\x1b[13;2u
+
+# Ctrl + I & Ctrl + M
+keybind = ctrl+i=text:\x1b[105;5u
+keybind = ctrl+m=text:\x1b[109;5u
+
+# Ctrl + Shift
+keybind = ctrl+shift+h=text:\x1b[72;6u
+keybind = ctrl+shift+j=text:\x1b[74;6u
+keybind = ctrl+shift+k=text:\x1b[75;6u
+keybind = ctrl+shift+l=text:\x1b[76;6u
+keybind = ctrl+shift+u=text:\x1b[117;6u
+keybind = ctrl+shift+o=text:\x1b[111;6u
+keybind = ctrl+shift+p=text:\x1b[112;6u
+keybind = ctrl+shift+s=text:\x1b[108;6u
+
+# Scrollback
+keybind = cmd+y=write_screen_file:copy,plain
+keybind = chain=text:nvim "$(pbpaste)"\n
+
+# Quick terminal
+keybind = global:cmd+grave_accent=toggle_quick_terminal
+
+# Mouse
+mouse-shift-capture = always

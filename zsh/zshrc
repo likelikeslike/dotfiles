@@ -1,0 +1,18 @@
+#!/usr/bin/env zsh
+source ~/.config/zsh/zsh_env
+source ~/.config/zsh/zsh_options
+source ~/.config/zsh/zsh_zimfw
+source ~/.config/zsh/zsh_completion
+source ~/.config/zsh/zsh_vim
+source ~/.config/zsh/zsh_func
+source ~/.config/zsh/zsh_alias
+source ~/.config/zsh/zsh_fzf
+
+command -v starship >/dev/null && eval "$(starship init zsh)"
+command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
+command -v fzf >/dev/null && source <(fzf --zsh)
+
+# Ghostty shell integration (must be after starship/zoxide to avoid hook clobbering)
+if [[ -n "$GHOSTTY_RESOURCES_DIR" ]]; then
+  source "$GHOSTTY_RESOURCES_DIR/shell-integration/zsh/ghostty-integration"
+fi

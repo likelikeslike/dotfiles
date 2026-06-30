@@ -1,0 +1,40 @@
+bindkey -v
+bindkey -M viins '^?' backward-delete-char
+bindkey -M viins '^H' backward-delete-char
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey -M viins '^v' edit-command-line
+bindkey -M vicmd '^v' edit-command-line
+bindkey -M emacs '^v' edit-command-line
+bindkey -M vicmd "h" vi-insert
+bindkey -M vicmd "H" vi-insert-bol
+bindkey -M vicmd "j" vi-backward-char
+bindkey -M vicmd "l" vi-forward-char
+bindkey -M vicmd "J" vi-beginning-of-line
+bindkey -M vicmd "L" vi-end-of-line
+bindkey -M vicmd "k" down-line-or-history
+bindkey -M vicmd "i" up-line-or-history
+bindkey -M visual 'j' vi-backward-char
+bindkey -M visual 'l' vi-forward-char
+bindkey -M visual 'k' down-line
+bindkey -M visual 'i' up-line
+
+function zle-keymap-select {
+	if [[ ${KEYMAP} == vicmd ]] || [[ $1 = 'block' ]]; then
+		echo -ne '\e[2 q'
+	elif [[ ${KEYMAP} == main ]] || [[ ${KEYMAP} == viins ]] || [[ ${KEYMAP} = '' ]] || [[ $1 = 'beam' ]]; then
+		echo -ne '\e[6 q'
+    fi
+}
+zle -N zle-keymap-select
+
+echo -ne '\e[6 q'
+
+preexec() {
+	echo -ne '\e[6 q'
+}
+
+_fix_cursor() {
+	echo -ne '\e[6 q'
+}
+precmd_functions+=(_fix_cursor)

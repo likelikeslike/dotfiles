@@ -1,0 +1,554 @@
+"$schema" = "https://starship.rs/config-schema.json"
+
+format = """
+$status\
+$os\
+$directory\
+$git_branch\
+$git_status\
+$fill\
+$cmd_duration\
+$python\
+$line_break\
+$character"""
+
+right_format        = "$jobs$hostname$memory_usage$battery"
+continuation_prompt = "[❯ ](muted_blue)"
+scan_timeout        = 3
+command_timeout     = 500
+add_newline         = true
+follow_symlinks     = true
+palette             = "tokyonight_moon"
+profiles            = {}
+
+[palettes.tokyonight_moon]
+deep_indigo   = '#222436'
+midnight      = '#1e2030'
+slate_purple  = '#2f334d'
+obsidian      = '#1b1d2b'
+soft_lavender = '#c8d3f5'
+dusty_blue    = '#828bb8'
+muted_blue    = '#636da6'
+steel_gray    = '#3b4261'
+periwinkle    = '#82aaff'
+sky_cyan      = '#86e1fc'
+spring_green  = '#c3e88d'
+lilac         = '#c099ff'
+tangerine     = '#ff966c'
+salmon        = '#ff757f'
+amber         = '#ffc777'
+pink_orchid   = '#fca7ea'
+cobalt        = '#3e68d7'
+azure         = '#65bcff'
+electric_cyan = '#0db9d7'
+ice_blue      = '#89ddff'
+seafoam       = '#4fd6be'
+teal          = '#41a6b5'
+mint_green    = '#4fd6be'
+aqua          = '#b4f9f8'
+
+
+[battery]
+disabled           = false
+format             = "[$symbol$percentage]($style)"
+full_symbol        = "󰁹 "
+charging_symbol    = "󰂄 "
+discharging_symbol = "󰁹 "
+unknown_symbol     = "󰂃 "
+empty_symbol       = "󰂎 "
+
+  [[battery.display]]
+  threshold          = 100
+  charging_symbol    = "󰂄 "
+  discharging_symbol = "󰁹 "
+  style              = "seafoam bold"
+
+  [[battery.display]]
+  threshold          = 90
+  charging_symbol    = "󰂄 "
+  discharging_symbol = "󰂂 "
+  style              = "seafoam bold"
+
+  [[battery.display]]
+  threshold          = 80
+  charging_symbol    = "󰂄 "
+  discharging_symbol = "󰂁 "
+  style              = "seafoam bold"
+
+  [[battery.display]]
+  threshold          = 70
+  charging_symbol    = "󰂄 "
+  discharging_symbol = "󰂀 "
+  style              = "seafoam bold"
+
+  [[battery.display]]
+  threshold          = 60
+  charging_symbol    = "󰂄 "
+  discharging_symbol = "󰁿 "
+  style              = "seafoam bold"
+
+  [[battery.display]]
+  threshold          = 50
+  charging_symbol    = "󰂄 "
+  discharging_symbol = "󰁾 "
+  style              = "amber bold"
+
+  [[battery.display]]
+  threshold          = 40
+  charging_symbol    = "󰂄 "
+  discharging_symbol = "󰁽 "
+  style              = "amber bold"
+
+  [[battery.display]]
+  threshold          = 30
+  charging_symbol    = "󰂄 "
+  discharging_symbol = "󰁼 "
+  style              = "amber bold"
+
+  [[battery.display]]
+  threshold          = 20
+  charging_symbol    = "󰂄 "
+  discharging_symbol = "󰁻 "
+  style              = "salmon bold"
+
+  [[battery.display]]
+  threshold          = 10
+  charging_symbol    = "󰂄 "
+  discharging_symbol = "󰁺 "
+  style              = "salmon bold"
+
+
+[character]
+disabled                  = false
+format                    = "$symbol "
+success_symbol            = "[╰─❯](bold spring_green)"
+error_symbol              = "[╰─❯](bold salmon)"
+vimcmd_symbol             = "[╰─❮](bold spring_green)"
+vimcmd_visual_symbol      = "[╰─❮](bold spring_green)"
+vimcmd_replace_symbol     = "[╰─❮](bold spring_green)"
+vimcmd_replace_one_symbol = "[╰─❮](bold spring_green)"
+
+
+[cmd_duration]
+disabled           = false
+format             = "[󱦟 $duration]($style) "
+style              = "bold dusty_blue"
+min_time           = 1000
+show_milliseconds  = false
+show_notifications = false
+
+
+[directory]
+disabled                  = false
+format                    = "[$path ]($style)([$read_only ]($read_only_style))"
+style                     = "bold fg:periwinkle"
+read_only_style           = "pink_orchid"
+home_symbol               = "~"
+read_only                 = "󰌾"
+truncation_symbol         = "…/"
+truncation_length         = 3
+truncate_to_repo          = false
+fish_style_pwd_dir_length = 0
+use_logical_path          = true
+
+  [directory.substitutions]
+  "Documents" = "󰈙"
+  "Downloads" = " "
+  "Music"     = " "
+  "Pictures"  = " "
+
+
+[fill]
+disabled = false
+style    = "bold black"
+symbol   = " "
+
+
+[git_branch]
+disabled           = false
+format             = "on [$symbol$branch]($style) "
+style              = "bold electric_cyan"
+symbol             = " "
+truncation_length  = 9223372036854775807
+truncation_symbol  = "…"
+only_attached      = false
+always_show_remote = false
+ignore_branches    = []
+
+
+[git_status]
+disabled          = false
+format            = "[$all_status$ahead_behind]($style)"
+style             = "pink_orchid"
+stashed           = "\\$"
+ahead             = "⇡"
+behind            = "⇣"
+up_to_date        = ""
+diverged          = "⇕"
+conflicted        = "x"
+deleted           = "-"
+renamed           = "»"
+modified          = "!"
+staged            = "+"
+untracked         = "?"
+typechanged       = ""
+ignore_submodules = false
+
+
+[hostname]
+disabled   = false
+format     = "[$ssh_symbol]($style) "
+style      = "spring_green dimmed bold"
+ssh_symbol = "󰢹 "
+trim_at    = "."
+ssh_only   = true
+
+
+[jobs]
+disabled         = false
+format           = "[$symbol$number]($style) "
+style            = "bold lilac"
+symbol           = " "
+number_threshold = 1
+symbol_threshold = 1
+
+
+[line_break]
+disabled = false
+
+
+[memory_usage]
+disabled  = false
+format    = "[$symbol$ram_pct]($style) "
+style     = "soft_lavender bold dimmed"
+symbol    = " "
+threshold = 75
+
+
+[os]
+disabled = false
+format   = "[$symbol]($style) "
+style    = "bold periwinkle"
+
+  [os.symbols]
+  Linux    = " "
+  Macos    = " "
+  Raspbian = " "
+  Ubuntu   = "󰕈 "
+  Unknown  = " "
+  Windows  = " "
+
+
+[python]
+disabled           = false
+format             = '[(${symbol} ${version} )(\($virtualenv\) )]($style)'
+version_format     = "${major}.${minor}"
+style              = "bold muted_blue"
+symbol             = " "
+pyenv_version_name = false
+pyenv_prefix       = "pyenv "
+python_binary      = ["python"]
+detect_extensions  = ["py"]
+detect_files       = [".python-version", "Pipfile", "__init__.py", "pyproject.toml", "requirements.txt", "setup.py", "tox.ini"]
+detect_folders     = []
+
+
+[status]
+disabled       = false
+format         = "[$symbol]($style)"
+style          = "bold salmon"
+success_style  = "bold spring_green"
+symbol         = "╭─ ✗ "
+success_symbol = "╭─ "
+
+
+[aws]
+disabled = true
+
+
+[azure]
+disabled = true
+
+
+[buf]
+disabled = true
+
+
+[bun]
+disabled = true
+
+
+[c]
+disabled = true
+
+
+[cmake]
+disabled = true
+
+
+[cobol]
+disabled = true
+
+
+[conda]
+disabled = true
+
+
+[container]
+disabled = true
+
+
+[crystal]
+disabled = true
+
+
+[daml]
+disabled = true
+
+
+[dart]
+disabled = true
+
+
+[deno]
+disabled = true
+
+
+[docker_context]
+disabled = true
+
+
+[dotnet]
+disabled = true
+
+
+[elixir]
+disabled = true
+
+
+[elm]
+disabled = true
+
+
+[env_var]
+disabled = {}
+
+
+[erlang]
+disabled = true
+
+
+[fennel]
+disabled = true
+
+
+[fossil_branch]
+disabled = true
+
+
+[fossil_metrics]
+disabled = true
+
+
+[gcloud]
+disabled = true
+
+
+[git_commit]
+disabled = true
+
+
+[git_metrics]
+disabled = true
+
+
+[git_state]
+disabled = true
+
+
+[gleam]
+disabled = true
+
+
+[golang]
+disabled = true
+
+
+[guix_shell]
+disabled = true
+
+
+[gradle]
+disabled = true
+
+
+[haskell]
+disabled = true
+
+
+[haxe]
+disabled = true
+
+
+[helm]
+disabled = true
+
+
+[hg_branch]
+disabled = true
+
+
+[java]
+disabled = true
+
+
+[julia]
+disabled = true
+
+
+[kotlin]
+disabled = true
+
+
+[kubernetes]
+disabled = true
+
+
+[localip]
+disabled = true
+
+
+[lua]
+disabled = true
+
+
+[meson]
+disabled = true
+
+
+[nim]
+disabled = true
+
+
+[nix_shell]
+disabled = true
+
+
+[nodejs]
+disabled = true
+
+
+[ocaml]
+disabled = true
+
+
+[opa]
+disabled = true
+
+
+[openstack]
+disabled = true
+
+
+[package]
+disabled = true
+
+
+[perl]
+disabled = true
+
+
+[php]
+disabled = true
+
+
+[pulumi]
+disabled = true
+
+
+[purescript]
+disabled = true
+
+
+[rlang]
+disabled = true
+
+
+[raku]
+disabled = true
+
+
+[red]
+disabled = true
+
+
+[ruby]
+disabled = true
+
+
+[rust]
+disabled = true
+
+
+[scala]
+disabled = true
+
+
+[shell]
+disabled = true
+
+
+[shlvl]
+disabled = true
+
+
+[singularity]
+disabled = true
+
+
+[solidity]
+disabled = true
+
+
+[spack]
+disabled = true
+
+
+[sudo]
+disabled = true
+
+
+[swift]
+disabled = true
+
+
+[terraform]
+disabled = true
+
+
+[time]
+disabled = true
+
+
+[typst]
+disabled = true
+
+
+[username]
+disabled = true
+
+
+[vagrant]
+disabled = true
+
+
+[vlang]
+disabled = true
+
+
+[vcsh]
+disabled = true
+
+
+[zig]
+disabled = true

@@ -1,0 +1,14 @@
+alias op="open ."
+alias calc="open -a Calculator"
+alias ll="ls -lGaf"
+alias lc="ls -l | grep '^-' | wc -l"
+alias cls="clear"
+alias tarc="tar -czf"
+alias tarx="tar -xzf"
+alias da="deactivate"
+alias lg='lazygit'
+alias vi='nvim'
+alias vim='nvim'
+alias oc="opencode"
+alias ssh="TERM=xterm-256color ssh"
+alias sc="source ~/.zshrc"

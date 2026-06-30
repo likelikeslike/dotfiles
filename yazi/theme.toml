@@ -1,0 +1,18 @@
+#:schema https://yazi-rs.github.io/schemas/theme.json
+
+[flavor]
+dark = "tokyo-night-moon"
+
+[git]
+modified       = { fg = "blue" }
+modified_sign  = "M"
+deleted        = { fg = "red", bold = true }
+deleted_sign   = "D"
+added          = { fg = "green" }
+added_sign     = "A"
+untracked      = { fg = "yellow" }
+untracked_sign = "U"
+ignored        = { fg = "gray", dim = true }
+ignored_sign   = "I"
+updated        = { fg = "cyan" }
+updated_sign   = "R"

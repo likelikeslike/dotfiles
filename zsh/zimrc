@@ -1,0 +1,13 @@
+zmodule environment
+zmodule git
+zmodule input
+zmodule termtitle
+zmodule utility
+zmodule completion
+zmodule duration-info
+zmodule git-info
+zmodule zsh-users/zsh-completions
+zmodule Aloxaf/fzf-tab
+zmodule zdharma-continuum/fast-syntax-highlighting
+zmodule zsh-users/zsh-history-substring-search
+zmodule zsh-users/zsh-autosuggestions

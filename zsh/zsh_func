@@ -1,0 +1,373 @@
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	command yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
+	rm -f -- "$tmp"
+}
+
+
+function acv() {
+    if [ -z "$1" ]; then
+        source .venv/bin/activate
+    elif [ -d "$1" ]; then
+        source "$1/bin/activate"
+    elif [ -d ".$1" ]; then
+        source ".$1/bin/activate"
+    else
+        echo "No such env: $1"
+    fi
+}
+
+function ts() {
+    if ! command -v tmux &> /dev/null; then
+        echo "tmux is not installed"
+        return 1
+    fi
+
+    if ! command -v fzf &> /dev/null; then
+        echo "fzf is not installed"
+        return 1
+    fi
+
+    local session_info
+    session_info=$(tmux list-sessions -F "#{session_created}\t#{session_name}\t#{session_windows}w\t#{?session_attached,attached,detached}\t#{t:session_created}" 2>/dev/null | sed 's/\\t/\t/g' | sort -nr | awk -F'\t' '{print $3 "\t" $4 "\t" $5 "\t" $2}')
+
+    local options
+    if [ -n "$session_info" ]; then
+        options="New\t\t\t\n$session_info"
+    else
+        options="New\t\t\t"
+    fi
+
+    local selected
+    selected=$(echo -e "$options" | fzf --prompt="Select session: " --height=~60% --nth=-1 --bind=tab:down,shift-tab:up --preview=)
+
+    if [ -z "$selected" ]; then
+        return 0
+    fi
+
+    if [[ "$selected" == "New"* ]]; then
+        echo -n "Enter session name: "
+        read session_name
+        if [ -z "$session_name" ]; then
+            tmux new-session -d && tmux attach-session
+        else
+            tmux new-session -d -s "$session_name" && tmux attach-session -t "$session_name"
+        fi
+    else
+        local session_name
+        session_name=$(echo "$selected" | awk -F'\t' '{print $NF}')
+        tmux attach-session -t "$session_name"
+    fi
+}
+
+function tk() {
+    if ! command -v tmux &> /dev/null; then
+        echo "tmux is not installed"
+        return 1
+    fi
+
+    if ! command -v fzf &> /dev/null; then
+        echo "fzf is not installed"
+        return 1
+    fi
+
+    local session_info
+    session_info=$(tmux list-sessions -F "#{session_created}\t#{session_name}\t#{session_windows}w\t#{?session_attached,attached,detached}\t#{t:session_created}" 2>/dev/null | sed 's/\\t/\t/g' | sort -nr | awk -F'\t' '{print $3 "\t" $4 "\t" $5 "\t" $2}')
+
+    if [ -z "$session_info" ]; then
+        echo "No tmux sessions found"
+        return 0
+    fi
+
+    local options
+
+    local selected
+    selected=$(echo -e "$session_info" | fzf --prompt="Kill session: " --height=~60% --nth=-1 --bind=tab:down,shift-tab:up --preview=)
+
+    if [ -z "$selected" ]; then
+        return 0
+    fi
+
+    local session_name
+    session_name=$(echo "$selected" | awk -F'\t' '{print $NF}')
+    echo -n "Kill session '$session_name'? (y/N): "
+    read confirm
+    if [[ "$confirm" =~ ^[Yy]$ ]]; then
+        tmux kill-session -t "$session_name"
+        echo "Session '$session_name' killed"
+    else
+        echo "Cancelled"
+    fi
+}
+
+# fe: fuzzy Edit - find file, open in nvim
+# Usage: fe [query]    fe [query] [path]
+function fe() {
+    local file
+    file=$(fd --type f --hidden --exclude .git --exclude node_modules --exclude .venv \
+        --max-depth 10 ${2:+.} ${2:+"$2"} | \
+        fzf --query="${1:-}" --select-1 --exit-0 \
+            --delimiter='/' --with-nth=-1 --accept-nth=.. \
+            --preview='bat --color=always --decorations=always --paging=never --style=header-filename,grid,numbers,snip --line-range=:500 {}' \
+            --preview-window='right:60%,noinfo')
+    [[ -n "$file" ]] && nvim "$file"
+}
+
+# fea: fuzzy Edit All - multi-select files (Tab), open all in nvim
+# Usage: fea [query]
+function fea() {
+    local -a files
+    files=("${(@f)$(fd --type f --hidden --exclude .git --exclude node_modules --exclude .venv \
+        --max-depth 10 | \
+        fzf --multi --query="${1:-}" \
+            --delimiter='/' --with-nth=-1 --accept-nth=.. \
+            --preview='bat --color=always --decorations=always --paging=never --style=header-filename,grid,numbers,snip --line-range=:500 {}' \
+            --bind '`:toggle+down,ctrl-a:select-all' \
+            --preview-window='right:60%,noinfo')}")
+    (( ${#files} )) && [[ -n "${files[1]}" ]] && nvim "${files[@]}"
+}
+
+# rgi: ripgrep interactive - live search, preview with bat, open at line
+# Usage: rgi [initial-query]
+function rgi() {
+    local selection file line
+    local initial="${1:-}"
+    local rg_prefix="rg --color=always --line-number --no-heading --smart-case"
+    if [[ -n "$initial" ]]; then
+        selection=$(${=rg_prefix} -- "$initial" | \
+            fzf --ansi --delimiter=: \
+                --disabled --query="$initial" \
+                --bind="change:reload:$rg_prefix -- {q} || true" \
+                --preview='start=$(echo {2} | awk "{s=\$1-15; print (s<1?1:s)}"); bat --color=always --highlight-line={2} --line-range=$start: {1} 2>/dev/null' \
+                --preview-window='right:60%')
+    else
+        selection=$(: | \
+            fzf --ansi --delimiter=: \
+                --disabled --query="" \
+                --bind="change:reload:$rg_prefix -- {q} || true" \
+                --preview='start=$(echo {2} | awk "{s=\$1-15; print (s<1?1:s)}"); bat --color=always --highlight-line={2} --line-range=$start: {1} 2>/dev/null' \
+                --preview-window='right:60%')
+    fi
+    [[ -z "$selection" ]] && return
+    file=$(echo "$selection" | cut -d: -f1)
+    line=$(echo "$selection" | cut -d: -f2)
+    nvim "+$line" "$file"
+}
+
+# rgf: ripgrep find - files containing pattern, pick one to edit
+# Usage: rgf <pattern>
+function rgf() {
+    [[ -z "$1" ]] && { echo "Usage: rgf <pattern>"; return 1; }
+    local file
+    file=$(rg --files-with-matches --no-messages -- "$1" | \
+        fzf --preview="rg --color=always --context=3 -- '$1' {}")
+    [[ -n "$file" ]] && nvim "$file"
+}
+
+# zz: zoxide interactive - visual picker from frecency history
+# Usage: zz [query]
+function zz() {
+    local root="$PWD"
+    [[ "$1" == "/" ]] && { root=""; shift; }
+    local dir
+    dir=$(zoxide query --list --score | \
+        sed 's/^[[:space:]]*[0-9.]*[[:space:]]*//' | \
+        { [[ -n "$root" ]] && grep "^$root" || cat; } | \
+        fzf --query="${1:-}" \
+            --preview='eza -la --color=always --no-user --no-permissions --git -- {}' \
+            --preview-window='right:40%')
+    [[ -n "$dir" ]] && cd "$dir"
+}
+
+# fd_cd: find directory by name, cd into it
+# Usage: fd_cd [query]
+function fd_cd() {
+    local dir
+    dir=$(fd --type d --hidden --exclude .git --exclude node_modules --exclude .venv \
+        --max-depth 8 | \
+        fzf --query="${1:-}" \
+            --preview='eza -la --color=always --no-user --no-permissions -- {}')
+    [[ -n "$dir" ]] && cd "$dir"
+}
+
+# fkill: fuzzy kill - pick process(es) to kill
+# Usage: fkill [-9]
+function fkill() {
+    local sig="${1:--TERM}"
+    local pids
+    pids=$(ps -u "$USER" -o pid,pcpu,pmem,comm | \
+        sed 1d | sort -k2 -rn | \
+        fzf --multi --header='  PID  %CPU %MEM COMMAND' \
+            --preview-window='hidden' | \
+        awk '{print $1}')
+    [[ -z "$pids" ]] && return
+    echo "$pids" | xargs kill "$sig"
+}
+
+# fport: find what's listening on ports, pick to kill
+# Usage: fport [port]
+function fport() {
+    local data
+    data=$(lsof -iTCP -sTCP:LISTEN -P -n 2>/dev/null | sed 1d)
+    [[ -z "$data" ]] && { echo "No listening ports"; return; }
+    if [[ -n "$1" ]]; then
+        data=$(echo "$data" | grep ":$1 ")
+        [[ -z "$data" ]] && { echo "Nothing on port $1"; return; }
+    fi
+    local selection
+    selection=$(echo "$data" | \
+        fzf --header='COMMAND PID USER FD TYPE DEVICE SIZE/OFF NODE NAME' \
+            --preview-window='hidden')
+    [[ -z "$selection" ]] && return
+    local pid=$(echo "$selection" | awk '{print $2}')
+    echo -n "Kill PID $pid? (y/N): "
+    read -r confirm
+    [[ "$confirm" =~ ^[Yy]$ ]] && kill -9 "$pid" && echo "Killed $pid"
+}
+
+# gb: git branch - fuzzy checkout (local + remote, sorted by recency)
+# Usage: gb [query]
+function gb() {
+    local branch
+    branch=$(git branch --all --sort=-committerdate --format='%(refname:short)' | \
+        sed 's|origin/||' | sort -u | \
+        fzf --query="${1:-}" --no-multi \
+            --preview='git log --oneline --graph --color=always -20 {}' \
+            --preview-window='right:50%')
+    [[ -n "$branch" ]] && git checkout "$branch"
+}
+
+# gl: git log - interactive commit browser, preview shows diff
+# Usage: gl
+function gl() {
+    local hash
+    hash=$(git log --oneline --graph --color=always --date=short \
+        --format='%C(auto)%h %C(blue)%ad %C(green)%an%C(reset) %s%C(auto)%d' | \
+        fzf --ansi --no-sort \
+            --preview='git show --color=always --stat -p $(echo {} | grep -o "[a-f0-9]\{7,\}" | head -1)' \
+            --preview-window='right:60%' | \
+        grep -o '[a-f0-9]\{7,\}' | head -1)
+    [[ -z "$hash" ]] && return
+    git show "$hash"
+}
+
+# gd: git diff - pick changed file to review/edit
+# Usage: gd [--staged]
+function gd() {
+    local staged=""
+    [[ "$1" == "--staged" || "$1" == "-s" ]] && staged="--staged"
+    local files
+    files=$(git diff $staged --name-only 2>/dev/null)
+    [[ -z "$files" ]] && { echo "No changes"; return; }
+    local file
+    file=$(echo "$files" | \
+        fzf --preview="git diff $staged --color=always -- {}" \
+            --preview-window='right:70%')
+    [[ -n "$file" ]] && nvim "$file"
+}
+
+# gst: git stash - browse and apply/pop stashes
+# Usage: gst
+function gst() {
+    local stash
+    stash=$(git stash list 2>/dev/null)
+    [[ -z "$stash" ]] && { echo "No stashes"; return; }
+    local selected
+    selected=$(echo "$stash" | \
+        fzf --preview='git stash show -p --color=always $(echo {} | cut -d: -f1)' \
+            --preview-window='right:60%')
+    [[ -z "$selected" ]] && return
+    local ref=$(echo "$selected" | cut -d: -f1)
+    echo -n "Apply or Pop '$ref'? (a/p/N): "
+    read -r action
+    case "$action" in
+        a) git stash apply "$ref" ;;
+        p) git stash pop "$ref" ;;
+        *) echo "Cancelled" ;;
+    esac
+}
+
+# envs: search environment variables interactively
+# Usage: envs [query]
+function envs() {
+    printenv | \
+        awk '/^[A-Za-z_][A-Za-z_0-9]*=/{if(line)print line; line=$0; next} {line=line" "$0} END{if(line)print line}' | \
+        sed 's/\x1b\[[0-9;]*m//g' | sort | \
+        fzf --no-ansi --query="${1:-}" \
+            --preview='echo {} | cut -d= -f2- | tr ":" "\n"' \
+            --preview-window='down:40%:wrap' \
+            --header='Preview splits PATH-like values by :'
+}
+
+# hist: fuzzy search recent shell history, load selection into prompt
+# Usage: hist [query]
+function hist() {
+    local cmd
+    cmd=$(fc -ln -5000 | awk '!seen[$0]++' | tail -r | \
+        fzf --query="${1:-}" --no-sort \
+            --preview-window='hidden')
+    [[ -n "$cmd" ]] && print -z "$cmd"
+}
+
+# dk: docker container picker (exec/logs/stop/rm)
+# Usage: dk
+function dk() {
+    command -v docker &>/dev/null || { echo "docker not found"; return 1; }
+    local data
+    data=$(docker ps --format 'table {{.ID}}\t{{.Image}}\t{{.Status}}\t{{.Names}}' 2>/dev/null | sed 1d)
+    [[ -z "$data" ]] && { echo "No running containers"; return; }
+    local container
+    container=$(echo "$data" | \
+        fzf --header='ID IMAGE STATUS NAMES' \
+            --preview='docker logs --tail=30 $(echo {} | awk "{print \$1}")' \
+            --preview-window='down:40%:wrap')
+    [[ -z "$container" ]] && return
+    local cid=$(echo "$container" | awk '{print $1}')
+    echo -n "Action for $cid: (e)xec (l)ogs (s)top (r)m: "
+    read -r action
+    case "$action" in
+        e) docker exec -it "$cid" sh ;;
+        l) docker logs -f "$cid" ;;
+        s) docker stop "$cid" ;;
+        r) docker rm -f "$cid" ;;
+        *) echo "Cancelled" ;;
+    esac
+}
+
+# path: browse $PATH entries with fzf, preview shows executables in each dir
+# Usage: path
+function path() {
+    echo "$PATH" | tr ':' '\n' | awk '!seen[$0]++' | while IFS= read -r p; do
+        if [[ -d "$p" ]]; then
+            printf '\033[32m%s\033[0m\n' "$p"
+        else
+            printf '\033[31m%s (not found)\033[0m\n' "$p"
+        fi
+    done | fzf --ansi --no-sort \
+        --preview='dir=$(echo {} | sed "s/ (not found)//"); ls "$dir" 2>/dev/null | head -80 || echo "directory missing"' \
+        --preview-window='right:50%' \
+        --header="$( echo "$PATH" | tr ':' '\n' | awk '!seen[$0]++' | wc -l | tr -d " ") unique entries"
+}
+
+# portcheck: quick check what's on a port
+# Usage: portcheck 8080
+function portcheck() {
+    [[ -z "$1" ]] && { echo "Usage: portcheck <port>"; return 1; }
+    lsof -iTCP:"$1" -sTCP:LISTEN -P -n 2>/dev/null || echo "Port $1 is free"
+}
+
+# serve: quick HTTP server in current dir
+# Usage: serve [port]
+function serve() {
+    local port="${1:-8000}"
+    echo "Serving on http://localhost:$port"
+    python3 -m http.server "$port"
+}
+
+# sizeof: disk usage sorted by size
+# Usage: sizeof [path]
+function sizeof() {
+    du -sh "${1:-.}"/* 2>/dev/null | sort -rh | head -30
+}

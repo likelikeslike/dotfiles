@@ -1,0 +1,17 @@
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -x /usr/local/bin/brew ]]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
+
+export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+
+export EDITOR=nvim
+export VISUAL=nvim
+
+export ZIM_CONFIG_FILE=~/.config/zsh/zimrc
+export STARSHIP_CONFIG=~/.config/starship/starship.toml
+export STARSHIP_LOG=error

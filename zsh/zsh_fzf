@@ -1,0 +1,32 @@
+export FZF_DEFAULT_PREVIEW='--preview="[[ -f {} ]] && bat --color=always --decorations=always --paging=never --style=header-filename,grid,numbers,snip --line-range=:500 {} || [[ -d {} ]] && eza -1 --color=always {} || echo {}"'
+export FZF_DEFAULT_OPTS="
+  --bind=tab:down,shift-tab:up
+  --style=default
+  $FZF_DEFAULT_PREVIEW
+  --preview-window=right:50%,noinfo
+  --highlight-line
+  --info=inline-right
+  --ansi
+  --layout=reverse
+  --border=none
+  --color=bg+:#2d3f76
+  --color=bg:#1e2030
+  --color=border:#589ed7
+  --color=fg:#c8d3f5
+  --color=gutter:#1e2030
+  --color=header:#ff966c
+  --color=hl+:#65bcff
+  --color=hl:#65bcff
+  --color=info:#545c7e
+  --color=marker:#ff007c
+  --color=pointer:#ff007c
+  --color=prompt:#65bcff
+  --color=query:#c8d3f5:regular
+  --color=scrollbar:#589ed7
+  --color=separator:#ff966c
+  --color=spinner:#ff007c
+"
+export FZF_DEFAULT_COMMAND='fd'
+export FZF_COMPLETION_TRIGGER='\'
+export FZF_TMUX=1
+export FZF_TMUX_HEIGHT='80%'

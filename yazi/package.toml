@@ -1,0 +1,39 @@
+[[plugin.deps]]
+use  = "yazi-rs/plugins:git"
+rev  = "38efe09"
+hash = "88e56a64b7ce7c4314427452343fef17"
+
+[[plugin.deps]]
+use  = "yazi-rs/plugins:full-border"
+rev  = "38efe09"
+hash = "7b625412411be411153886894d9acaf"
+
+[[plugin.deps]]
+use  = "yazi-rs/plugins:smart-enter"
+rev  = "38efe09"
+hash = "187cc58ba7ac3befd49c342129e6f1b6"
+
+[[plugin.deps]]
+use  = "Rolv-Apneseth/starship"
+rev  = "159eaba"
+hash = "7de446280b1ba8c49ffd86dbc24bbbe6"
+
+[[plugin.deps]]
+use  = "likelikeslike/tar"
+rev  = "b461dbb"
+hash = "f173f02e95015e28bc0feb968f488e9a"
+
+[[plugin.deps]]
+use  = "likelikeslike/osc7"
+rev  = "bbdd3d8"
+hash = "358c6810c5aafd34a47baaff582d104c"
+
+[[plugin.deps]]
+use  = "likelikeslike/bookmarks"
+rev  = "5e2c0bf"
+hash = "b45988442809a4730fc62986db522be5"
+
+[[flavor.deps]]
+use  = "likelikeslike/tokyo-night-moon"
+rev  = "19639dc"
+hash = "6c1db9540f20238f368493309270838d"

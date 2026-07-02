@@ -31,7 +31,6 @@ return {
         "javascript",
         "jsdoc",
         "json",
-        "jsonc",
         "latex",
         "lua",
         "luadoc",
@@ -76,27 +75,59 @@ return {
 
       TS.setup(opts)
 
+      -- On the `main` branch, TS.setup only reads `install_dir`; ensure_installed is a no-op.
+      -- Install missing parsers explicitly. TS.install is async and idempotent.
+      local installed = TS.get_installed("parsers")
+      local to_install = vim.tbl_filter(function(lang)
+        return not vim.list_contains(installed, lang)
+      end, opts.ensure_installed)
+      if #to_install > 0 then
+        TS.install(to_install)
+      end
+
+      local function activate(buf)
+        local ft = vim.bo[buf].filetype
+        if ft == "" then
+          return
+        end
+        local lang = vim.treesitter.language.get_lang(ft)
+
+        local function enabled(feat)
+          local f = opts[feat] or {}
+          return f.enable ~= false and not (type(f.disable) == "table" and vim.tbl_contains(f.disable, lang))
+        end
+
+        if enabled("highlight") then
+          pcall(vim.treesitter.start, buf)
+        end
+
+        if enabled("indent") then
+          vim.bo[buf].indentexpr = "v:lua.require('nvim-treesitter').indentexpr()"
+        end
+
+        if enabled("folds") then
+          if vim.opt.foldmethod:get() == "expr" then
+            vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+          end
+        end
+      end
+
+      local group = vim.api.nvim_create_augroup("treesitter_config", { clear = true })
       vim.api.nvim_create_autocmd("FileType", {
-        group = vim.api.nvim_create_augroup("treesitter_config", { clear = true }),
+        group = group,
         callback = function(ev)
-          local ft, lang = ev.match, vim.treesitter.language.get_lang(ev.match)
+          activate(ev.buf)
+        end,
+      })
 
-          local function enabled(feat)
-            local f = opts[feat] or {}
-            return f.enable ~= false and not (type(f.disable) == "table" and vim.tbl_contains(f.disable, lang))
-          end
-
-          if enabled("highlight") then
-            pcall(vim.treesitter.start, ev.buf)
-          end
-
-          if enabled("indent") then
-            vim.bo[ev.buf].indentexpr = "v:lua.require('nvim-treesitter').indentexpr()"
-          end
-
-          if enabled("folds") then
-            if vim.opt.foldmethod:get() == "expr" then
-              vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+      -- Re-activate open buffers after a fresh parser install completes.
+      vim.api.nvim_create_autocmd("User", {
+        group = group,
+        pattern = "TSUpdate",
+        callback = function()
+          for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+            if vim.api.nvim_buf_is_loaded(buf) then
+              activate(buf)
             end
           end
         end,

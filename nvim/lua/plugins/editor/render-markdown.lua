@@ -10,6 +10,26 @@ return {
     keys = {
       { "<leader>um", "<cmd>RenderMarkdown toggle<cr>", desc = "Toggle Markdown Render" },
     },
+    config = function(_, opts)
+      local hl = vim.api.nvim_set_hl
+      local transparent_groups = {
+        "RenderMarkdownCode",
+        "RenderMarkdownCodeBorder",
+        "RenderMarkdownCodeInline",
+        "RenderMarkdownH1Bg",
+        "RenderMarkdownH2Bg",
+        "RenderMarkdownH3Bg",
+        "RenderMarkdownH4Bg",
+        "RenderMarkdownH5Bg",
+        "RenderMarkdownH6Bg",
+      }
+      for _, group in ipairs(transparent_groups) do
+        local existing = vim.api.nvim_get_hl(0, { name = group })
+        existing.bg = nil
+        hl(0, group, existing)
+      end
+      require("render-markdown").setup(opts)
+    end,
     opts = {
       -- Vim modes that will show a rendered view of the markdown file, :h mode(), for all enabled
       -- components. Individual components can be enabled for other modes. Remaining modes will be

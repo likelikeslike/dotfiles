@@ -587,9 +587,9 @@ keybinding:
     optionMenu: "?"
     select: <space>
     goInto: l
-    confirm: <enter>
-    confirmMenu: "l"
-    confirmSuggestion: <enter>
+    confirm: [l, <enter>]
+    confirmMenu: [l, <enter>]
+    confirmSuggestion: [l, <enter>]
 
     # <meta+enter> on Mac
     confirmInEditor: [<meta+enter>, <meta+s>]

@@ -1,39 +1,44 @@
 [[plugin.deps]]
-use  = "yazi-rs/plugins:git"
-rev  = "38efe09"
-hash = "88e56a64b7ce7c4314427452343fef17"
+use = "yazi-rs/plugins:git"
+rev = "c591a36"
+hash = "5bb0bfab901d3601c370eafdd66edd31"
 
 [[plugin.deps]]
-use  = "yazi-rs/plugins:full-border"
-rev  = "38efe09"
-hash = "7b625412411be411153886894d9acaf"
+use = "yazi-rs/plugins:full-border"
+rev = "c591a36"
+hash = "f281261ff04ad7ec867c3f802a50835f"
 
 [[plugin.deps]]
-use  = "yazi-rs/plugins:smart-enter"
-rev  = "38efe09"
+use = "yazi-rs/plugins:smart-enter"
+rev = "c591a36"
 hash = "187cc58ba7ac3befd49c342129e6f1b6"
 
 [[plugin.deps]]
-use  = "Rolv-Apneseth/starship"
-rev  = "159eaba"
-hash = "7de446280b1ba8c49ffd86dbc24bbbe6"
+use = "Rolv-Apneseth/starship"
+rev = "ea92cf4"
+hash = "9776f378459072b6c2875eae5addc49d"
 
 [[plugin.deps]]
-use  = "likelikeslike/tar"
-rev  = "b461dbb"
-hash = "f173f02e95015e28bc0feb968f488e9a"
+use = "likelikeslike/tar"
+rev = "b525d55"
+hash = "1aa7e6234a3a96c802a0c8938bcc6649"
 
 [[plugin.deps]]
-use  = "likelikeslike/osc7"
-rev  = "bbdd3d8"
-hash = "358c6810c5aafd34a47baaff582d104c"
+use = "likelikeslike/osc7"
+rev = "1edf433"
+hash = "aea9b5217dffd3fd76fd33b7b101d390"
 
 [[plugin.deps]]
-use  = "likelikeslike/bookmarks"
-rev  = "5e2c0bf"
+use = "likelikeslike/bookmarks"
+rev = "5e2c0bf"
 hash = "b45988442809a4730fc62986db522be5"
 
+[[plugin.deps]]
+use = "likelikeslike/root-det"
+rev = "9e781a7"
+hash = "a745c678f8be516e50f8aa93821a6d2a"
+
 [[flavor.deps]]
-use  = "likelikeslike/tokyo-night-moon"
-rev  = "19639dc"
-hash = "6c1db9540f20238f368493309270838d"
+use = "likelikeslike/tokyo-night-moon"
+rev = "6dab7ee"
+hash = "42c8d51b9754cdbbf58e5ca47b6d2bb0"

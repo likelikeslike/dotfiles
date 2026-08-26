@@ -30,5 +30,11 @@ require("bookmarks"):setup({
     },
   },
 })
-
 require("osc7"):setup()
+require("root-det"):setup({
+  root_markers = {
+    ".git",
+    ".editorconfig",
+    "Makefile",
+  },
+})

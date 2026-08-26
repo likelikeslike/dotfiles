@@ -15,3 +15,8 @@ export VISUAL=nvim
 export ZIM_CONFIG_FILE=~/.config/zsh/zimrc
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
 export STARSHIP_LOG=error
+
+export MINUET_ENDPOINT=
+export MINUET_API_KEY=
+export MINUET_MODEL=
+

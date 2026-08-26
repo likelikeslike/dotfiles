@@ -8,4 +8,5 @@ return {
   require("plugins.editor.notebook"),
   require("plugins.editor.yazi"),
   require("plugins.editor.render-markdown"),
+  require("plugins.editor.guess-indent"),
 }

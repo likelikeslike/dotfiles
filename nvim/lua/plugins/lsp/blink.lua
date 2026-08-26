@@ -9,7 +9,6 @@ return {
     },
     dependencies = {
       "rafamadriz/friendly-snippets",
-      "fang2hou/blink-copilot",
     },
     event = { "InsertEnter", "CmdlineEnter" },
     opts = {
@@ -23,6 +22,9 @@ return {
       },
 
       completion = {
+        trigger = {
+          prefetch_on_insert = false,
+        },
         accept = {
           auto_brackets = {
             enabled = true,
@@ -49,24 +51,21 @@ return {
         },
       },
       sources = {
-        default = { "lsp", "path", "snippets", "buffer", "copilot" },
+        default = { "lsp", "path", "snippets", "buffer", "minuet" },
         providers = {
-          copilot = {
-            name = "copilot",
-            module = "blink-copilot",
+          minuet = {
+            name = "minuet",
+            module = "minuet.blink",
             score_offset = 100,
             async = true,
-            opts = {
-              max_completions = 3,
-              max_attempts = 4,
-              kind_name = "Copilot",
-              kind_icon = "",
-              debounce = 200,
-              auto_refresh = {
-                backward = true,
-                forward = true,
-              },
-            },
+            timeout_ms = 8000,
+            transform_items = function(_, items)
+              local icon = require("utils.icons").kinds.Copilot
+              for _, item in ipairs(items) do
+                item.kind_icon = icon
+              end
+              return items
+            end,
           },
         },
       },
@@ -88,6 +87,11 @@ return {
       keymap = {
         preset = "super-tab",
         ["<C-y>"] = { "select_and_accept" },
+        ["<A-y>"] = {
+          function(cmp)
+            cmp.show({ providers = { "minuet" } })
+          end,
+        },
       },
     },
     config = function(_, opts)

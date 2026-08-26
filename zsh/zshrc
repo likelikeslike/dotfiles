@@ -8,6 +8,7 @@ source ~/.config/zsh/zsh_func
 source ~/.config/zsh/zsh_alias
 source ~/.config/zsh/zsh_fzf
 
+command -v brew >/dev/null && eval "$(/opt/homebrew/bin/brew shellenv)"
 command -v starship >/dev/null && eval "$(starship init zsh)"
 command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
 command -v fzf >/dev/null && source <(fzf --zsh)

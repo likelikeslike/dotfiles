@@ -1,5 +1,6 @@
 cursor-style-blink = false
-macos-titlebar-style = tabs
+macos-titlebar-style = hidden
+window-theme = dark
 macos-option-as-alt = true
 window-save-state = always
 
@@ -13,6 +14,7 @@ shell-integration-features = no-cursor,no-sudo,no-title
 font-family = JetBrains Mono
 font-size = 12
 
+theme = light:TokyoNight Day,dark:TokyoNight Moon
 background = #222436
 foreground = #c8d3f5
 selection-background = #2d3f76
@@ -26,6 +28,7 @@ window-padding-x = 10
 window-padding-y = 5
 unfocused-split-opacity = 0.6
 
+# normal
 palette = 0=#1b1d2b
 palette = 1=#ff757f
 palette = 2=#c3e88d
@@ -35,6 +38,7 @@ palette = 5=#7c5fbf
 palette = 6=#86e1fc
 palette = 7=#c7c7c7
 
+# bright
 palette = 8=#444a73
 palette = 9=#ff8d94
 palette = 10=#c7fb6d
@@ -44,6 +48,7 @@ palette = 13=#caabff
 palette = 14=#b2ebff
 palette = 15=#c8d3f5
 
+# extended
 palette = 16=#ff966c
 palette = 17=#c53b53
 

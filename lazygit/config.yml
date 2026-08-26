@@ -73,6 +73,26 @@ gui:
   # is true.
   expandedSidePanelWeight: 2
 
+  # If true, don't give a side panel more height than it needs to show its
+  # content; when all panels fit, the leftover height is shared among them so that
+  # they still fill the screen.
+  shrinkSidePanelsToContent: false
+
+  # The side panels, in the order they appear from top to bottom.
+  # Each entry is a list of one or more names that share a single panel as tabs
+  # (cycle through them with the next-tab/previous-tab keys).
+  # Omit a name to hide it; give a name its own one-element list to promote a tab
+  # to a top-level panel.
+  # Valid names are: 'status', 'files', 'worktrees', 'submodules', 'branches',
+  # 'remotes', 'tags', 'commits', 'reflog', 'stash'. 'files', 'branches', and
+  # 'commits' must always be included; they can't be hidden.
+  sidePanels:
+    - [status]
+    - [files, worktrees, submodules]
+    - [branches, remotes, tags]
+    - [commits, reflog]
+    - [stash]
+
   # Sometimes the main window is split in two (e.g. when the selected file has
   # both staged and unstaged changes). This setting controls how the two sections
   # are split.
@@ -250,13 +270,13 @@ gui:
   spinner:
     # The frames of the spinner animation.
     frames:
-      - "|"
-      - /
-      - "-"
-      - \
+      - ●∙∙
+      - ∙●∙
+      - ∙∙●
+      - ∙●∙
 
     # The "speed" of the spinner in milliseconds.
-    rate: 50
+    rate: 180
 
   # Status panel view.
   # One of 'dashboard' (default) | 'allBranchesLog'
@@ -297,12 +317,12 @@ git:
   #
   # See https://github.com/jesseduffield/lazygit/blob/master/docs/Custom_Pagers.md
   # for more information.
-  pagers:
+  diffRenderers:
     # - pager: delta --dark --paging=never
-    - pager: ydiff -p cat -s --wrap --width={{columnWidth}}
+    - command: ydiff -p cat -s --wrap --width={{columnWidth}}
       colorArg: never
-    - externalDiffCommand: difft --color=always
-
+    - command: difft --color=always
+      type: extDiff
   # Config relating to committing
   commit:
     # If true, pass '--signoff' flag when committing
@@ -343,6 +363,11 @@ git:
 
   # If true, periodically refresh files and submodules
   autoRefresh: true
+
+  # If true, poll the repo periodically for external ref changes (commits, branch
+  # updates, checkouts made outside lazygit) and refresh when one is detected.
+  # Independent of autoRefresh, which only governs the files panel.
+  autoDetectExternalChanges: true
 
   # If not "none", lazygit will automatically fast-forward local branches to match
   # their upstream after fetching. Applies to branches that are not the currently
@@ -437,6 +462,15 @@ git:
   # to 40 to disable truncation.
   truncateCopiedCommitHashesTo: 12
 
+# Config relating to git worktrees
+worktree:
+  # Default parent directory for new worktrees. It is offered as a candidate
+  # location alongside the parent directories of any worktrees you already have.
+  # A relative path is resolved against the repository's root directory, so
+  # "../worktrees" sits beside the repo and ".worktrees" sits inside it.
+  # A leading "~" is expanded to your home directory, so "~/worktrees" works.
+  defaultPath: ""
+
 # Periodic update checks
 update:
   # One of: 'prompt' (default) | 'background' | 'never'
@@ -454,6 +488,11 @@ refresher:
   # Re-fetch interval in seconds.
   # Auto-fetch can be disabled via option 'git.autoFetch'.
   fetchInterval: 60
+
+  # Interval in seconds at which lazygit polls for external ref changes (commits,
+  # branch updates, checkouts made outside lazygit).
+  # Detection can be disabled via option 'git.autoDetectExternalChanges'.
+  externalChangeCheckInterval: 2
 
 # If true, show a confirmation popup before quitting Lazygit
 confirmOnQuit: false
@@ -595,13 +634,13 @@ keybinding:
     confirmInEditor: [<meta+enter>, <meta+s>]
     remove: d
     new: "n"
+    newWorktree: w
     edit: e
     openFile: o
     scrollUpMain: [<pgup>, I, <ctrl+u>]
     scrollDownMain: [<pgdown>, K, <ctrl+d>]
     scrollUpMain-alt1: <disabled>
     scrollDownMain-alt2: <disabled>
-
     executeShellCommand: ":"
     createRebaseOptionsMenu: m
 
@@ -616,7 +655,8 @@ keybinding:
     prevTab: "["
     nextScreenMode: +
     prevScreenMode: _
-    cyclePagers: "|"
+    cycleDiffRenderers: "|"
+    cycleDiffRenderersReverse: \
     undo: z
     redo: Z
     filteringMenu: <ctrl+s>
@@ -631,6 +671,7 @@ keybinding:
     increaseRenameSimilarityThreshold: )
     decreaseRenameSimilarityThreshold: (
     openDiffTool: <ctrl+t>
+    editConfig: <alt+shift+c>
   status:
     checkForUpdate: u
     recentRepos: <enter>
@@ -676,8 +717,6 @@ keybinding:
     fetchRemote: f
     addForkRemote: F
     sortOrder: s
-  worktrees:
-    viewWorktreeOptions: w
   commits:
     squashDown: s
     renameCommit: r

@@ -51,7 +51,13 @@ return {
         },
       },
       sources = {
-        default = { "lsp", "path", "snippets", "buffer", "minuet" },
+        default = function()
+          local default = { "lsp", "path", "snippets", "buffer" }
+          if vim.env.MINUET_ENDPOINT and vim.env.MINUET_API_KEY and vim.env.MINUET_MODEL then
+            table.insert(default, "minuet")
+          end
+          return default
+        end,
         providers = {
           minuet = {
             name = "minuet",

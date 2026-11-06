@@ -1,16 +1,16 @@
 [[plugin.deps]]
 use  = "yazi-rs/plugins:git"
-rev  = "58c4f4e"
-hash = "5bb0bfab901d3601c370eafdd66edd31"
+rev  = "c0529fc"
+hash = "347cc6b190eb0c2fd60513cc7ae37412"
 
 [[plugin.deps]]
 use  = "yazi-rs/plugins:full-border"
-rev  = "58c4f4e"
-hash = "f281261ff04ad7ec867c3f802a50835f"
+rev  = "c0529fc"
+hash = "17ebde15c4349f90aedbc45984b98db2"
 
 [[plugin.deps]]
 use  = "yazi-rs/plugins:smart-enter"
-rev  = "58c4f4e"
+rev  = "c0529fc"
 hash = "187cc58ba7ac3befd49c342129e6f1b6"
 
 [[plugin.deps]]
@@ -35,8 +35,8 @@ hash = "b45988442809a4730fc62986db522be5"
 
 [[plugin.deps]]
 use  = "likelikeslike/root-det"
-rev  = "9e781a7"
-hash = "a745c678f8be516e50f8aa93821a6d2a"
+rev  = "07f5c65"
+hash = "3187eb86ad260767bb683fea16b98da8"
 
 [[flavor.deps]]
 use  = "likelikeslike/tokyo-night-moon"
